@@ -24,21 +24,13 @@ export default class App extends Component {
 
   componentDidMount() {
     setTimeout(() => {
-      // Add a new message to the list of messages in the data store
-      let newMessage = { id: 3, username: 'Mimi the pigglet 🐷', content: 'Hello there!' };
-      const messages = this.state.message.concat(newMessage)
-      // Update the state of the app component.
-      // Calling setState will trigger a call to render() in App and all child components.
-      this.setState({ message: messages })
+      this.newMessage('Mimi the pigglet 🐷', 'hello there world!')
     }, 2000);
   }
 
-  newChatLine() {
-    setTimeout(() => {
-      let newMessage = { id: 4, username: ''}
-      let newMessageList = this.state.message.concat(newMessage)
-      this.setState({ message: newMessageList }) 
-      }, 1000);
+  newMessage(username, content) {
+    const messages = this.state.message.concat({username, content, id: Date.now()});
+    this.setState({message: messages});
   }
 
   render() {
@@ -50,10 +42,10 @@ export default class App extends Component {
           <NavBar />
         </div>
         <div className="container">
-          <MessageList messages={messages}/>
+          <MessageList messages={messages} />
         </div>
         <div className="chatbar">
-          <Footer currentUser={currentUser} />
+          <Footer newMessage={this.newMessage.bind(this)} />
         </div>
       </div>
     );

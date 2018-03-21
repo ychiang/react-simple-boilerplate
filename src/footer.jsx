@@ -3,25 +3,31 @@ export default class Footer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: props.currentUser,
+      username: props.currentUser || '',
       content: ''
     };
-    this.onChange = this.onChange.bind(this);
+    this.handleUsernameChange = this.handleUsernameChange.bind(this);
+    this.handleContentChange = this.handleContentChange.bind(this);
     this.onKeypress = this.onKeypress.bind(this);
   }
-  
-  onChange(event) {
-    console.log(event.target.value);
-    this.setState({
 
-    })
+  handleUsernameChange(event) {
+    this.setState({
+      username: event.target.value
+    });
+  }
+
+  handleContentChange(event) {
+    this.setState({
+      content: event.target.value
+    });
   }
 
   onKeypress(event) {
     if (event.key === 'Enter') {
-      console.log(event.target.value);
-    this.setState({
-      content: event.target.value
+      this.props.newMessage(this.state.username.replace(/\s/g, '').length <= 0 ? 'Bob the duckling 🐥' : this.state.username, this.state.content);
+      this.setState({
+        content: ''
       });
     }
   }
@@ -31,8 +37,8 @@ export default class Footer extends Component {
     let props = this.props;
     return (
       <footer className="chatbar">
-        <input className="chatbar-username" placeholder={props.currentUser} onChange={this.onChange}/> 
-        <input className="chatbar-message" placeholder={props.content} onKeyPress={this.onKeypress} />
+        <input className="chatbar-username" placeholder="Bob the duckling 🐥" value={this.state.username} onChange={this.handleUsernameChange} />
+        <input className="chatbar-message" placeholder="Type a message and hit Enter" onKeyPress={this.onKeypress} onChange={this.handleContentChange} value={this.state.content} />
       </footer>
     );
   }
