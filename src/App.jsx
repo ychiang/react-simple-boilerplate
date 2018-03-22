@@ -7,30 +7,26 @@ export default class App extends Component {
   //Set initial state
   constructor(props) {
     super(props);
+    this.socket = '';
     this.state = {
       currentUser: { name: 'Bob the duckling 🐥'},
-      message: [{
-        id: 1,
-        username: 'Puff the bunny 🐰',
-        content: 'dreaming about strawberries...yum!'
-      },
-      {
-        id: 2,
-        username: 'Bob the duckling 🐥',
-        content: 'I won\'t be impressed with technology until I can download food'
-      }]
+      message: []
     }
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.newMessage('Mimi the pigglet 🐷', 'hello there world!')
-    }, 2000);
+    this.socket = new WebSocket('ws://localhost:3001');
+    this.socket.onmessage = (evt) => this.onMessageHandler(evt);
+  }
+
+  onMessageHandler(event) {
+    const msgs = this.state.message.concat(JSON.parse(event.data));
+    this.setState({ message: msgs });
   }
 
   newMessage(username, content) {
-    const messages = this.state.message.concat({username, content, id: Date.now()});
-    this.setState({message: messages});
+    const currentMessage = { username, content };
+    this.socket.send(JSON.stringify(currentMessage));
   }
 
   render() {
