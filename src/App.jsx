@@ -9,9 +9,12 @@ export default class App extends Component {
     super(props);
     this.socket = '';
     this.state = {
-      currentUser: { name: 'Bob the duckling 🐥'},
-      message: []
+      currentUser: {name: 'Bob the duckling 🐥'},
+      messages: []
     }
+    this.newUsername = this.newUsername.bind(this);
+    this.newMessage = this.newMessage.bind(this);
+    //this.defaultUser = this.defaultUser.bind(this);
   }
 
   componentDidMount() {
@@ -20,18 +23,25 @@ export default class App extends Component {
   }
 
   onMessageHandler(event) {
-    const msgs = this.state.message.concat(JSON.parse(event.data));
-    this.setState({ message: msgs });
+    const msgs = this.state.messages.concat(JSON.parse(event.data));
+    this.setState({ messages: msgs });
   }
 
-  newMessage(username, content) {
-    const currentMessage = { username, content };
+  newMessage(type,username, content) {
+    const currentMessage = {type, username, content };
+    console.log(currentMessage);
     this.socket.send(JSON.stringify(currentMessage));
+  }
+
+  newUsername(name){
+    console.log('nidaye', name, this);
+    this.setState({currentUser:{name:name}});
+    console.log(this.state.currentUser)
   }
 
   render() {
     const currentUser = this.state.currentUser.name;
-    const messages = this.state.message;
+    const messages = this.state.messages;
     return (
       <div className="entire-app">
         <div className="navbar">
@@ -41,7 +51,7 @@ export default class App extends Component {
           <MessageList messages={messages} />
         </div>
         <div className="chatbar">
-          <Footer newMessage={this.newMessage.bind(this)} />
+          <Footer newMessage={this.newMessage} newUsername={this.newUsername} currentUser={currentUser} />
         </div>
       </div>
     );
