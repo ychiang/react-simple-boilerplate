@@ -19,8 +19,8 @@ export default class Message extends Component {
       );
       case 'incomingNotification':
       return (
-        <div className="content">
-          <span className="message-content">{this.props.content}</span>
+        <div className="notification-content">
+          <span className="message system">{this.props.content}</span>
         </div>
       );
     }
