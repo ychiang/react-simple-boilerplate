@@ -6,6 +6,7 @@ export default class Footer extends Component {
       username: '',
       content: ''
     };
+    //If no username entered, default = Bob 
     this.defaultUsername = 'Bob the duckling 🐥';
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handleContentChange = this.handleContentChange.bind(this);
@@ -36,27 +37,17 @@ export default class Footer extends Component {
     }
   }
 
-
+  //Once user use either tab or clicking elsewhere (no more focus on input), fires the event of userA changed username to userB
   onBlur(event){
-
-    // if the new username is the same as the old username, do nothing.
-    console.log('who am I by default', this.props.currentUser);
-    console.log('who am I in state', this.state.username);
-    console.log('whats this', this.props)
-
     let newUsername = event.target.value;
     newUsername = newUsername.replace(/\s/g, '').length <= 0 ? this.defaultUsername : newUsername;
     if (this.props.currentUser !== newUsername) {
       this.props.newMessage('postNotification', null, `${this.props.currentUser} changed name to ${newUsername}`);
-      //this.setState({username:event.target.value});
       this.props.newUsername(this.state.username);
     }
-
   }
 
   render() {
-    //Needs to implement if no username entered, defaultValue = Bob. 
-  
     return (
       <footer className="chatbar">
         <input className="chatbar-username" placeholder={this.defaultUsername} value={this.state.username} onChange={this.handleUsernameChange} onBlur={this.onBlur}/>

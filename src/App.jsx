@@ -10,33 +10,42 @@ export default class App extends Component {
     this.socket = '';
     this.state = {
       currentUser: {name: 'Bob the duckling 🐥'},
+      userCount: 0,
       messages: []
     }
     this.newUsername = this.newUsername.bind(this);
     this.newMessage = this.newMessage.bind(this);
-    //this.defaultUser = this.defaultUser.bind(this);
   }
 
   componentDidMount() {
     this.socket = new WebSocket('ws://localhost:3001');
     this.socket.onmessage = (evt) => this.onMessageHandler(evt);
+   
   }
+
+  // onUserCount(event) {
+  //   const usersOnline = event.data;
+  //   this.setState({ userCount: usersOnline });
+  // }
 
   onMessageHandler(event) {
-    const msgs = this.state.messages.concat(JSON.parse(event.data));
+    let newMessage = JSON.parse(event.data);
+    const msgs = this.state.messages.concat(newMessage);
+    if (newMessage.type === 'userCount') {
+      this.setState({ userCount: newMessage.connected })
+    } else {
     this.setState({ messages: msgs });
+    }
   }
 
-  newMessage(type,username, content) {
+  newMessage(type, username, content) {
     const currentMessage = {type, username, content };
-    console.log(currentMessage);
+    // console.log(currentMessage);
     this.socket.send(JSON.stringify(currentMessage));
   }
 
   newUsername(name){
-    console.log('nidaye', name, this);
     this.setState({currentUser:{name:name}});
-    console.log(this.state.currentUser)
   }
 
   render() {
@@ -45,7 +54,7 @@ export default class App extends Component {
     return (
       <div className="entire-app">
         <div className="navbar">
-          <NavBar />
+          <NavBar userCount={this.state.userCount} />
         </div>
         <div className="container">
           <MessageList messages={messages} />
